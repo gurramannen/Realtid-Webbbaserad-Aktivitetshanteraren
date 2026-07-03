@@ -23,6 +23,7 @@ async function getSystemInfo() {
     let cpuTemp = { main: null, max: null };
     let network = [];
     let osInfo = { platform: os.platform(), arch: os.arch() };
+      let cpuInfo = { manufacturer: null, brand: null, speed: null };
     let time = { uptime: os.uptime() };
 
     try {
@@ -41,6 +42,12 @@ async function getSystemInfo() {
       cpuTemp = await si.cpuTemperature();
     } catch (err) {
       console.error('cpuTemperature error:', err.message);
+    }
+
+    try {
+      cpuInfo = await si.cpu();
+    } catch (err) {
+      console.error('cpu info error:', err.message);
     }
 
     try {
@@ -64,6 +71,9 @@ async function getSystemInfo() {
     return {
       cpu: Math.round(load.currentLoad || 0),
       cpuCores: (load.cpus && load.cpus.length) || os.cpus().length,
+      cpuModel: cpuInfo.brand || cpuInfo.manufacturer || null,
+      cpuSpeed: cpuInfo.speed || null,
+      cpuThreads: cpuInfo.threads || cpuInfo.cores || null,
       avgLoad: Number((load.avgLoad || 0).toFixed(2)),
       ramPercent: mem.total > 0 ? Math.round((mem.used / mem.total) * 100) : 0,
       totalMemory: mem.total || 0,
@@ -80,6 +90,9 @@ async function getSystemInfo() {
     return {
       cpu: 0,
       cpuCores: os.cpus().length,
+      cpuModel: null,
+      cpuSpeed: null,
+      cpuThreads: null,
       avgLoad: 0,
       ramPercent: 0,
       totalMemory: 0,

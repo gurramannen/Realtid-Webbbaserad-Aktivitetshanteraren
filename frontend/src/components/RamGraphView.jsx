@@ -10,13 +10,13 @@ export default function RamGraphView({ systemInfo, history }) {
   return (
     <div className="flex-1 flex flex-col">
       {/* Header */}
-      <div className="p-6 md:p-8 border-b border-slate-800">
-        <div className="flex items-baseline gap-4">
+      <div className="p-6 md:p-8 border-b border-gray-200 card">
+        <div className="flex items-baseline gap-4 justify-between">
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white">{systemInfo?.ramPercent ?? 0}%</h2>
-            <p className="text-slate-400 text-sm mt-1">Minne använt</p>
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900">{systemInfo?.ramPercent ?? 0}%</h2>
+            <p className="text-slate-500 text-sm mt-1">Minne använt</p>
           </div>
-          <div className="text-slate-500 text-sm flex gap-4">
+          <div className="text-slate-600 text-sm flex gap-4">
             <span>Använt: {formatBytes(systemInfo?.usedMemory ?? 0)}</span>
             <span>Totalt: {formatBytes(systemInfo?.totalMemory ?? 0)}</span>
           </div>
@@ -24,24 +24,25 @@ export default function RamGraphView({ systemInfo, history }) {
       </div>
 
       {/* Graph */}
-      <div className="flex-1 p-6 md:p-8">
+      <div className="flex-1 p-6 md:p-8 card">
         <ResponsiveContainer width="100%" height={300}>
           <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e6e9ee" />
             <XAxis dataKey="time" stroke="#94a3b8" style={{ fontSize: '12px' }} />
             <YAxis stroke="#94a3b8" domain={[0, 100]} style={{ fontSize: '12px' }} />
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: '#0f172a', 
-                border: '1px solid #475569',
-                borderRadius: '8px'
+                backgroundColor: '#ffffff', 
+                border: '1px solid #e6e9ee',
+                borderRadius: '8px',
+                color: '#0f172a'
               }}
-              labelStyle={{ color: '#e2e8f0' }}
+              labelStyle={{ color: '#0f172a' }}
             />
             <Line 
               type="monotone" 
               dataKey="RAM" 
-              stroke="#a855f7" 
+              stroke="#7c3aed" 
               dot={false}
               strokeWidth={2}
               isAnimationActive={false}
@@ -51,18 +52,18 @@ export default function RamGraphView({ systemInfo, history }) {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 p-6 md:p-8 border-t border-slate-800 bg-slate-900/30">
-        <div>
-          <p className="text-slate-400 text-xs uppercase tracking-widest">Använt</p>
-          <p className="text-xl font-semibold text-purple-300 mt-2">{formatBytes(systemInfo?.usedMemory ?? 0)}</p>
+      <div className="grid grid-cols-3 gap-4 p-6 md:p-8 border-t border-gray-100">
+        <div className="card p-4">
+          <p className="text-slate-500 text-xs uppercase tracking-widest">Använt</p>
+          <p className="text-2xl font-semibold text-slate-900 mt-2">{formatBytes(systemInfo?.usedMemory ?? 0)}</p>
         </div>
-        <div>
-          <p className="text-slate-400 text-xs uppercase tracking-widest">Fritt</p>
-          <p className="text-xl font-semibold text-purple-300 mt-2">{formatBytes(systemInfo?.freeMemory ?? 0)}</p>
+        <div className="card p-4">
+          <p className="text-slate-500 text-xs uppercase tracking-widest">Fritt</p>
+          <p className="text-2xl font-semibold text-slate-900 mt-2">{formatBytes(systemInfo?.freeMemory ?? 0)}</p>
         </div>
-        <div>
-          <p className="text-slate-400 text-xs uppercase tracking-widest">Totalt</p>
-          <p className="text-xl font-semibold text-purple-300 mt-2">{formatBytes(systemInfo?.totalMemory ?? 0)}</p>
+        <div className="card p-4">
+          <p className="text-slate-500 text-xs uppercase tracking-widest">Totalt</p>
+          <p className="text-2xl font-semibold text-slate-900 mt-2">{formatBytes(systemInfo?.totalMemory ?? 0)}</p>
         </div>
       </div>
     </div>

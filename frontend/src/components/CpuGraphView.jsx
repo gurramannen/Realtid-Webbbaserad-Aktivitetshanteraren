@@ -9,36 +9,39 @@ export default function CpuGraphView({ systemInfo, history }) {
 
   return (
     <div className="flex-1 flex flex-col">
-      {/* Header */}
-      <div className="p-6 md:p-8 border-b border-slate-800">
-        <div className="flex items-baseline gap-4">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white">{systemInfo?.cpu ?? 0}%</h2>
-            <p className="text-slate-400 text-sm mt-1">CPU-användning</p>
+      {/* Header (compact) */}
+      <div className="p-4 border-b border-gray-200 card">
+        <div className="flex items-center gap-4 justify-between">
+          <div className="flex items-center gap-3">
+            <h2 className="text-3xl font-extrabold text-slate-900">{systemInfo?.cpu ?? 0}%</h2>
+            <span className="text-[11px] px-2 py-1 rounded-full bg-green-100 text-green-700">Live</span>
           </div>
-          <div className="text-slate-500 text-sm">Cores: {systemInfo?.cpuCores ?? 0}</div>
+          <div className="text-slate-600 text-xs">
+            <div className="text-right">{systemInfo?.cpuCores ?? 0} kärnor</div>
+          </div>
         </div>
       </div>
 
-      {/* Graph */}
-      <div className="flex-1 p-6 md:p-8">
-        <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={chartData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-            <XAxis dataKey="time" stroke="#94a3b8" style={{ fontSize: '12px' }} />
-            <YAxis stroke="#94a3b8" domain={[0, 100]} style={{ fontSize: '12px' }} />
+      {/* Graph (smaller) */}
+      <div className="flex-1 p-4 card">
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={chartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+            <XAxis dataKey="time" stroke="#94a3b8" hide={true} />
+            <YAxis stroke="#94a3b8" domain={[0, 100]} hide={true} />
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: '#0f172a', 
-                border: '1px solid #475569',
-                borderRadius: '8px'
+                backgroundColor: '#ffffff', 
+                border: '1px solid #e6e9ee',
+                borderRadius: '8px',
+                color: '#0f172a'
               }}
-              labelStyle={{ color: '#e2e8f0' }}
+              labelStyle={{ color: '#0f172a' }}
             />
             <Line 
               type="monotone" 
               dataKey="CPU" 
-              stroke="#06b6d4" 
+              stroke="#0b84ff" 
               dot={false}
               strokeWidth={2}
               isAnimationActive={false}
@@ -47,28 +50,33 @@ export default function CpuGraphView({ systemInfo, history }) {
         </ResponsiveContainer>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 p-6 md:p-8 border-t border-slate-800 bg-slate-900/30">
-        <div>
-          <p className="text-slate-400 text-xs uppercase tracking-widest">Genomsnittlig Last</p>
-          <p className="text-xl font-semibold text-cyan-300 mt-2">{systemInfo?.avgLoad ?? 0}</p>
-        </div>
-        <div>
-          <p className="text-slate-400 text-xs uppercase tracking-widest">Kärnor</p>
-          <p className="text-xl font-semibold text-cyan-300 mt-2">{systemInfo?.cpuCores ?? 0}</p>
-        </div>
-        <div>
-          <p className="text-slate-400 text-xs uppercase tracking-widest">Uptime</p>
-          <p className="text-xl font-semibold text-cyan-300 mt-2">{formatUptime(systemInfo?.uptime ?? 0)}</p>
+      {/* CPU Statistics */}
+      <div className="p-4 border-t border-gray-200 card bg-slate-50">
+        <div className="grid grid-cols-2 gap-4">
+          {systemInfo?.cpuModel && (
+            <div>
+              <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Modell</div>
+              <div className="text-sm font-semibold text-slate-900 mt-1">{systemInfo.cpuModel}</div>
+            </div>
+          )}
+          {systemInfo?.cpuSpeed && (
+            <div>
+              <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Hastighet</div>
+              <div className="text-sm font-semibold text-slate-900 mt-1">{systemInfo.cpuSpeed} GHz</div>
+            </div>
+          )}
+          <div>
+            <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Kärnor</div>
+            <div className="text-sm font-semibold text-slate-900 mt-1">{systemInfo?.cpuCores ?? 0}</div>
+          </div>
+          {systemInfo?.cpuThreads && (
+            <div>
+              <div className="text-xs text-slate-500 font-semibold uppercase tracking-wider">Trådar</div>
+              <div className="text-sm font-semibold text-slate-900 mt-1">{systemInfo.cpuThreads}</div>
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
-}
-
-function formatUptime(seconds) {
-  if (!seconds) return '0h 0m';
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  return `${hours}h ${minutes}m`;
 }

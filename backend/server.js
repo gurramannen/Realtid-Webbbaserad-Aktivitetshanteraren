@@ -23,11 +23,20 @@ const dataHistory = {
 };
 const MAX_HISTORY = 60;
 
-app.use(express.static(path.join(__dirname, '../frontend')));
+const frontendDist = path.join(__dirname, '../frontend/dist');
+const frontendSrc = path.join(__dirname, '../frontend');
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
-});
+if (require('fs').existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+} else {
+  app.use(express.static(frontendSrc));
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(frontendSrc, 'index.html'));
+  });
+}
 
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
